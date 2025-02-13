@@ -17,7 +17,8 @@ const InputText = () => {
 
       const lineHeight = parseInt(getComputedStyle(textarea).lineHeight, 10);
       const maxHeight = lineHeight * 7;
-      textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+      textarea.style.overflowY =
+        textarea.scrollHeight > maxHeight ? "auto" : "hidden";
     }
   }, [message]);
 
@@ -25,8 +26,9 @@ const InputText = () => {
     <div className="relative flex items-center w-full">
       <textarea
         ref={textareaRef}
-        className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border border-[#F9EF19] 
-        bg-[rgba(217,217,217,0.4)] focus:bg-[rgba(217,217,217,0.2)] placeholder-white focus:placeholder-opacity-50"
+        className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-500 
+            bg-[rgba(217,217,217,0.4)] focus:bg-[rgba(217,217,217,0.2)] placeholder-white 
+            focus:placeholder-opacity-50 focus:border-[#F9EF19] focus:outline-none"
         placeholder="Type your message..."
         rows={1}
         value={message}
@@ -39,17 +41,17 @@ const InputText = () => {
         flex items-center space-x-2 pr-3`}
       >
         {/* Paperclip Button */}
-        <button className="p-2 rounded-full bg-white text-gray-500 hover:bg-yellow-400 transition">
-          <Paperclip size={20} />
+        <button className="p-2 rounded-full bg-white text-gray-700 hover:bg-yellow-400 transition">
+          <Paperclip size={15} />
         </button>
 
         {/* Send Button */}
         <button
           className={`p-2 rounded-full ${
-            message ? "bg-[#F9E919]" : "bg-gray-300"
-          } text-gray-500 hover:bg-yellow-400 transition`}
+            message ? "bg-[#F9E919]" : "bg-white"
+          } text-gray-700 hover:bg-yellow-400 transition`}
         >
-          <Send size={20} />
+          <Send size={15} />
         </button>
       </div>
     </div>
