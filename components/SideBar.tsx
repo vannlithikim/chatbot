@@ -1,27 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { chatMessages } from "@/constants/data";
-import {
-  Ellipsis,
-  PanelLeftOpen,
-  PanelRightOpen,
-  SquarePen,
-} from "lucide-react";
+import { Ellipsis, PanelLeftOpen, PanelRightOpen, SquarePen } from "lucide-react";
 
 function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null); // New state for clicked chat
+  const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+  const handleMessageClick = (index: number) => setActiveChatIndex(index);
 
-  const handleMessageClick = (index: number) => {
-    // Set the active chat index when clicked
-    setActiveChatIndex(index);
-  };
+  // Debugging useEffect
+  useEffect(() => {
+    console.log('activeIndex:', activeIndex);
+    console.log('activeChatIndex:', activeChatIndex);
+  }, [activeIndex, activeChatIndex]);
+
+  // Ensure `chatMessages` is an array and log it
+  useEffect(() => {
+    console.log('chatMessages:', chatMessages);
+  }, []);
 
   return (
     <div
@@ -40,7 +40,6 @@ function SideBar() {
             </span>
           )}
         </Link>
-
         {!isCollapsed && (
           <button
             onClick={toggleSidebar}
@@ -70,18 +69,11 @@ function SideBar() {
             isCollapsed ? "justify-center" : "justify-between px-4"
           }`}
         >
-          {/* "Add New Chat" text aligned to the left */}
-          {!isCollapsed && (
-            <span className="mr-2 text-sm font-semibold">Add New Chat</span>
-          )}
-
-          {/* SquarePen icon aligned to the right */}
-          <SquarePen
-            className={`transition-all duration-300 ${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`}
-          />
+          {!isCollapsed && <span className="mr-2 text-sm font-semibold">Add New Chat</span>}
+          <SquarePen className={`transition-all duration-300 ${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`} />
         </button>
 
-        {/* "Today" text below "Add New Chat" button, only when expanded */}
+        {/* "Today" text and Chat History */}
         {!isCollapsed && (
           <div className="mx-4 pt-10">
             <div className="flex justify-between">
@@ -90,22 +82,18 @@ function SideBar() {
             </div>
 
             {/* Chat History */}
-            <div className="bg-[#414141] w-full h-auto mt-7  rounded-lg p-2 text-[14px]">
+            <div className="bg-[#414141] w-full h-auto mt-7 rounded-lg p-2 text-[14px]">
               {chatMessages.map((message, index) => (
                 <div
                   key={index}
-                  className={`flex flex-row justify-between items-center px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-[#373737]  relative 
-                  ${activeChatIndex === index ? 'bg-[#313131]' : ''}`} // Highlight when selected
+                  className={`flex flex-row justify-between items-center px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-[#373737] relative ${
+                    activeChatIndex === index ? "bg-[#313131]" : ""
+                  }`}
                   onMouseEnter={() => setActiveIndex(index)}
                   onMouseLeave={() => setActiveIndex(null)}
-                  onClick={() => handleMessageClick(index)} // Set active chat on click
+                  onClick={() => handleMessageClick(index)}
                 >
-                  {/* Text container */}
-                  <p className="w-[90%] overflow-hidden whitespace-nowrap text-gray-200">
-                    {message}
-                  </p>
-
-                  {/* Show ellipsis button only on hover or click */}
+                  <p className="w-[85%] overflow-hidden whitespace-nowrap text-gray-200">{message}</p>
                   {(activeIndex === index || activeChatIndex === index) && (
                     <button className="absolute right-3">
                       <Ellipsis className="h-5 w-5" />
