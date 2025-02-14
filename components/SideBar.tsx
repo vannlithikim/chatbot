@@ -1,19 +1,32 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { PanelLeftOpen, PanelRightOpen, SquarePen } from "lucide-react";
+import { chatMessages } from "@/constants/data";
+import {
+  Ellipsis,
+  PanelLeftOpen,
+  PanelRightOpen,
+  SquarePen,
+} from "lucide-react";
 
 function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null); // New state for clicked chat
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const handleMessageClick = (index: number) => {
+    // Set the active chat index when clicked
+    setActiveChatIndex(index);
+  };
+
   return (
     <div
       className={`fixed h-screen bg-[#1C1C1C] text-white transition-all duration-300 ease-in-out ${
-        isCollapsed ? "w-20" : "w-64"
+        isCollapsed ? "w-20" : "w-[20%]"
       }`}
     >
       {/* Logo Section */}
@@ -22,7 +35,7 @@ function SideBar() {
           {isCollapsed ? (
             <Image src="/Logo.png" alt="Logo" width={40} height={40} />
           ) : (
-            <span className="text-xl font-bold">
+            <span className="text-xl font-bold text-[#F9EF19]">
               Chat<span className="text-[#F9EF19]">BOT</span>
             </span>
           )}
@@ -63,10 +76,47 @@ function SideBar() {
           )}
 
           {/* SquarePen icon aligned to the right */}
-          <SquarePen className={`transition-all duration-300 ${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`} />
+          <SquarePen
+            className={`transition-all duration-300 ${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`}
+          />
         </button>
+
+        {/* "Today" text below "Add New Chat" button, only when expanded */}
+        {!isCollapsed && (
+          <div className="mx-4 pt-10">
+            <div className="flex justify-between">
+              <p className="text-sm text-gray-300 font-bold">Today</p>
+              <p className="font-bold text-[#F9EF19] text-sm">Clear</p>
+            </div>
+
+            {/* Chat History */}
+            <div className="bg-[#414141] w-full h-auto mt-7  rounded-lg p-2 text-[14px]">
+              {chatMessages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-row justify-between items-center px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-[#373737]  relative 
+                  ${activeChatIndex === index ? 'bg-[#313131]' : ''}`} // Highlight when selected
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  onClick={() => handleMessageClick(index)} // Set active chat on click
+                >
+                  {/* Text container */}
+                  <p className="w-[90%] overflow-hidden whitespace-nowrap text-gray-200">
+                    {message}
+                  </p>
+
+                  {/* Show ellipsis button only on hover or click */}
+                  {(activeIndex === index || activeChatIndex === index) && (
+                    <button className="absolute right-3">
+                      <Ellipsis className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
-      
     </div>
   );
 }
