@@ -26,7 +26,7 @@ const InputText = () => {
     <div className="relative flex items-center w-full">
       <textarea
         ref={textareaRef}
-        className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-500 
+        className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-400 
             bg-[rgba(217,217,217,0.4)] focus:bg-[rgba(217,217,217,0.2)] placeholder-white 
             focus:placeholder-opacity-50 focus:border-[#F9EF19] focus:outline-none"
         placeholder="Type your message..."

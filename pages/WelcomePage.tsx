@@ -8,7 +8,7 @@ const WelcomePage = () => {
   return (
     <section className="">
       {/* Chat BOT heading at the top left */}
-      <h1 className="text-[#F9EF19] font-bold text-2xl pl-4 pt-4">Chat BOT</h1>
+      <header className="text-[#F9EF19] font-bold text-2xl pl-4 pt-4">Chat BOT</header>
 
       {/* Logo centered horizontally but positioned below the heading */}
       <div className="flex flex-col justify-center items-center mt-20">
@@ -38,7 +38,7 @@ const WelcomePage = () => {
       </div>
 
       {/* accept the term policy */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 text-center">
+      <footer className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 text-center">
         <p>
           By messaging ChatBOT, you agree to our 
           <a
@@ -51,9 +51,8 @@ const WelcomePage = () => {
           <a href="#" className="underline text-[#F9EF19] hover:text-[#00BFFF]">
             Privacy Policy
           </a>
-          .
         </p>
-      </div>
+      </footer>
     </section>
   );
 };
