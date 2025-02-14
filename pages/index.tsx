@@ -1,9 +1,9 @@
 import React from 'react'
-import WelcomePage from './WelcomePage'
+import ChatPage from './ChatPage'
 
 function index() {
   return (
-    <WelcomePage />
+    <ChatPage />
   )
 }
 
