@@ -10,6 +10,8 @@ function ChatPage() {
 
       {/* Main Content Area */}
       <Logo />
+
+      {/** */}
     </div>
   );
 }

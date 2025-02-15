@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { chatMessages } from "@/constants/data";
-import { Ellipsis, PanelLeftOpen, PanelRightOpen, SquarePen } from "lucide-react";
+import {
+  Ellipsis,
+  PanelLeftOpen,
+  PanelRightOpen,
+  Search,
+  SquarePen,
+} from "lucide-react";
 
 function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -14,13 +20,13 @@ function SideBar() {
 
   // Debugging useEffect
   useEffect(() => {
-    console.log('activeIndex:', activeIndex);
-    console.log('activeChatIndex:', activeChatIndex);
+    console.log("activeIndex:", activeIndex);
+    console.log("activeChatIndex:", activeChatIndex);
   }, [activeIndex, activeChatIndex]);
 
   // Ensure `chatMessages` is an array and log it
   useEffect(() => {
-    console.log('chatMessages:', chatMessages);
+    console.log("chatMessages:", chatMessages);
   }, []);
 
   return (
@@ -41,12 +47,20 @@ function SideBar() {
           )}
         </Link>
         {!isCollapsed && (
-          <button
-            onClick={toggleSidebar}
-            className="p-2 rounded hover:bg-gray-700 focus:outline-none ml-[47%]"
-          >
-            <PanelRightOpen className="w-6 h-6" />
-          </button>
+          <div className="flex items-center justify-between space-x-1">
+            {/* Search Icon */}
+            <button className="p-2 rounded hover:bg-gray-700 focus:outline-none">
+              <Search className="w-6 h-6" />
+            </button>
+
+            {/* Toggle Sidebar Button */}
+            <button
+              onClick={toggleSidebar}
+              className="p-2 rounded hover:bg-gray-700 focus:outline-none"
+            >
+              <PanelRightOpen className="w-6 h-6" />
+            </button>
+          </div>
         )}
       </div>
 
@@ -69,8 +83,12 @@ function SideBar() {
             isCollapsed ? "justify-center" : "justify-between px-4"
           }`}
         >
-          {!isCollapsed && <span className="mr-2 text-sm font-semibold">Add New Chat</span>}
-          <SquarePen className={`transition-all duration-300 ${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`} />
+          {!isCollapsed && (
+            <span className="mr-2 text-sm font-semibold">Add New Chat</span>
+          )}
+          <SquarePen
+            className={`transition-all duration-300 ${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`}
+          />
         </button>
 
         {/* "Today" text and Chat History */}
@@ -93,7 +111,9 @@ function SideBar() {
                   onMouseLeave={() => setActiveIndex(null)}
                   onClick={() => handleMessageClick(index)}
                 >
-                  <p className="w-[85%] overflow-hidden whitespace-nowrap text-gray-200">{message}</p>
+                  <p className="w-[85%] overflow-hidden whitespace-nowrap text-gray-200">
+                    {message}
+                  </p>
                   {(activeIndex === index || activeChatIndex === index) && (
                     <button className="absolute right-3">
                       <Ellipsis className="h-5 w-5" />
