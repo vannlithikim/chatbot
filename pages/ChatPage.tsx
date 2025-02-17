@@ -19,8 +19,9 @@ function ChatPage() {
       </div>
 
       {/* Input Field Wrapper (for positioning and width control) */}
-      <div className="flex flex-1 items-end justify-center p-4">
-        <div className="w-[60%] max-w-2xl">
+      <div className="flex flex-1 items-end justify-center p-4 mb-10">
+        <div className="w-[90%] max-w-[800px] mx-auto mr-56">
+          {/* Added mr-8 to move to the right */}
           <InputText />
         </div>
       </div>
