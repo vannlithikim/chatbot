@@ -10,12 +10,10 @@ import {
   SquarePen,
 } from "lucide-react";
 
-function SideBar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+function SideBar({ isCollapsed, toggleSidebar }: { isCollapsed: boolean; toggleSidebar: () => void }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
   const handleMessageClick = (index: number) => setActiveChatIndex(index);
 
   // Debugging useEffect
