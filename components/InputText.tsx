@@ -1,4 +1,4 @@
-import { Send, Paperclip } from "lucide-react";
+import { Send, Paperclip, RotateCcw, Pencil, Copy } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 // Function to handle the full API response
@@ -81,9 +81,16 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, 
             className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`p-3 rounded-lg ${msg.sender === "user" ? "bg-[#F9EF19]" : "bg-white"} max-w-xs`}
+              className={`p-3 rounded-lg ${msg.sender === "user" ? "bg-[#F9EF19]" : "bg-white"} max-w-xs relative`}
             >
               <span className="text-black">{msg.text}</span>
+              {msg.sender === "bot" && (
+                <div className="absolute left-0  bottom-[-25px] flex justify-center gap-2">
+                  <RotateCcw size={18} className="text-gray-500" />
+                  <Pencil size={18} className="text-gray-500"/>
+                  <Copy  size={18} className="text-gray-500"/>
+                </div>
+              )}
             </div>
           </div>
         ))}
