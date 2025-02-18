@@ -1,15 +1,41 @@
 import { Send, Paperclip } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
-// Assume you have a function to handle the API call for getting bot responses
-const fetchChatbotResponse = async (userMessage: string) => {
-  const response = "This is a bot response to: " + userMessage;
-  return response;
+// Function to handle the full API response
+const handleFullResponse = async (
+  userMessage: string,
+  setMessages: React.Dispatch<React.SetStateAction<{ text: string; sender: "user" | "bot" }[]>>,
+  setIsStreaming: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  try {
+    const response = await fetch(`/api/sse?message=${encodeURIComponent(userMessage)}`);
+
+    if (!response.ok) {
+      throw new Error('Server Error: Failed to fetch data');
+    }
+
+    const data = await response.json();
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: data.data, sender: "bot" }, // Add the full response from the API
+    ]);
+  } catch (error) {
+    // Handle error and display an error message
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: "Server Error: Please try again later.", sender: "bot" },
+    ]);
+    console.error(error); // Log the error for debugging purposes
+  } finally {
+    setIsStreaming(false); // Set streaming to false after the process ends
+  }
 };
 
 const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, isCollapsed: boolean }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isMultiLine, setIsMultiLine] = useState(false);
 
@@ -30,19 +56,18 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, 
   }, [message]);
 
   const handleSendMessage = async () => {
-    if (message.trim()) {
+    if (message.trim() && !isStreaming) {
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: message, sender: "user" },
       ]);
-      setMessage("");
+      setMessage(""); // Clear the input message
 
-      const botResponse = await fetchChatbotResponse(message);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: botResponse, sender: "bot" },
-      ]);
-      onMessageSend();
+      // Start fetching response from the server (wait for the full response)
+      setIsStreaming(true);
+      handleFullResponse(message, setMessages, setIsStreaming);
+
+      onMessageSend(); // Optional: Notify parent component (if necessary)
     }
   };
 
