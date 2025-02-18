@@ -4,14 +4,18 @@ import { useState, useRef, useEffect } from "react";
 // Function to handle the full API response
 const handleFullResponse = async (
   userMessage: string,
-  setMessages: React.Dispatch<React.SetStateAction<{ text: string; sender: "user" | "bot" }[]>>,
+  setMessages: React.Dispatch<
+    React.SetStateAction<{ text: string; sender: "user" | "bot" }[]>
+  >,
   setIsStreaming: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const response = await fetch(`/api/sse?message=${encodeURIComponent(userMessage)}`);
+    const response = await fetch(
+      `/api/sse?message=${encodeURIComponent(userMessage)}`
+    );
 
     if (!response.ok) {
-      throw new Error('Server Error: Failed to fetch data');
+      throw new Error("Server Error: Failed to fetch data");
     }
 
     const data = await response.json();
@@ -32,9 +36,17 @@ const handleFullResponse = async (
   }
 };
 
-const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, isCollapsed: boolean }) => {
+const InputText = ({
+  onMessageSend,
+  isCollapsed,
+}: {
+  onMessageSend: () => void;
+  isCollapsed: boolean;
+}) => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([]);
+  const [messages, setMessages] = useState<
+    { text: string; sender: "user" | "bot" }[]
+  >([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isMultiLine, setIsMultiLine] = useState(false);
@@ -81,14 +93,18 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, 
             className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`p-3 rounded-lg ${msg.sender === "user" ? "bg-[#F9EF19]" : "bg-transparent"} max-w-xs relative`}
+              className={`p-3 rounded-lg ${msg.sender === "user" ? "bg-[#F9EF19]" : "bg-transparent"} max-w-xs relative `}
             >
-              <span className={`${msg.sender === "user" ? "text-black " : "text-white"}`}>{msg.text}</span>
+              <span
+                className={`${msg.sender === "user" ? "text-black " : "text-white"}`}
+              >
+                {msg.text}
+              </span>
               {msg.sender === "bot" && (
-                <div className="absolute left-3 bottom-[-25px] flex justify-center gap-2">
+                <div className="absolute left-3 bottom-[-15px] flex justify-center gap-2">
                   <RotateCcw size={18} className="text-white" />
-                  <Pencil size={18} className="text-white"/>
-                  <Copy size={18} className="text-white"/>
+                  <Pencil size={18} className="text-white" />
+                  <Copy size={18} className="text-white" />
                 </div>
               )}
             </div>
@@ -103,7 +119,7 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, 
             isCollapsed ? "ml-[345px]" : "ml-[460px]"
           }`}
         >
-          <div className="absolute top-[-30px] bottom-0 left-[-10] right-10 bg-[#2B2B2B] z-0 w-[110%]" />
+          <div className="absolute top-[-20px] bottom-0 left-[-10] right-10 bg-[#2B2B2B] z-0 w-[110%] h-[200px]" />
 
           <textarea
             ref={textareaRef}
