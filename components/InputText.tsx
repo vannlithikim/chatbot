@@ -67,11 +67,12 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, 
       {/* Input Area (Fixed at Bottom) */}
       <div className="fixed bottom-0 left-0 right-0 py-3 px-4 mb-5 bg-transparent z-10">
         <div
-          className={`relative flex items-center w-full max-w-[50%] mx-auto ${
-            isCollapsed ? "ml-[auto]" : "ml-[500px]"
+          className={`relative flex items-center w-full max-w-[54%] mx-auto ${
+            isCollapsed ? "ml-[345px]" : "ml-[460px]"
           }`}
         >
-          <div className="absolute inset-0 bg-[#2B2B2B]  z-0" />
+          <div className="absolute top-[-30px] bottom-0 left-[-10] right-10 bg-[#2B2B2B] z-0 w-[110%]" />
+
           <textarea
             ref={textareaRef}
             className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-400 
