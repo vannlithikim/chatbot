@@ -47,7 +47,7 @@ const InputText = ({ onMessageSend }: { onMessageSend: () => void }) => {
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full max-w-4xl mx-auto">
       {/* Chat messages */}
       <div className="flex-1 space-y-2 pb-20">
         {messages.map((msg, idx) => (
@@ -65,13 +65,13 @@ const InputText = ({ onMessageSend }: { onMessageSend: () => void }) => {
       </div>
 
       {/* Input Area (Fixed at Bottom) */}
-      <div className="w-full fixed bottom-0 left-0 bg-white py-3 px-4 border-t-2 border-gray-300 z-10">
-        <div className="relative flex items-center w-full">
+      <div className="fixed bottom-0 right-[-16%] left-0 py-3 px-4 mb-5">
+        <div className="relative flex items-center w-full max-w-[46%] mx-auto">
           <textarea
             ref={textareaRef}
             className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-400 
               bg-[rgba(217,217,217,0.4)] focus:bg-[rgba(217,217,217,0.2)] placeholder-white 
-              focus:placeholder-opacity-50 focus:border-[#F9EF19] focus:outline-none text-black"
+              focus:placeholder-opacity-50 focus:border-[#F9EF19] focus:outline-none text-white"
             placeholder="Type your message..."
             rows={1}
             value={message}
