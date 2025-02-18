@@ -7,7 +7,7 @@ const fetchChatbotResponse = async (userMessage: string) => {
   return response;
 };
 
-const InputText = ({ onMessageSend }: { onMessageSend: () => void }) => {
+const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void, isCollapsed: boolean }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -65,13 +65,18 @@ const InputText = ({ onMessageSend }: { onMessageSend: () => void }) => {
       </div>
 
       {/* Input Area (Fixed at Bottom) */}
-      <div className="fixed bottom-0 right-[-16%] left-0 py-3 px-4 mb-5">
-        <div className="relative flex items-center w-full max-w-[46%] mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 py-3 px-4 mb-5 bg-transparent z-10">
+        <div
+          className={`relative flex items-center w-full max-w-[50%] mx-auto ${
+            isCollapsed ? "ml-[auto]" : "ml-[500px]"
+          }`}
+        >
+          <div className="absolute inset-0 bg-[#2B2B2B]  z-0" />
           <textarea
             ref={textareaRef}
             className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-400 
-              bg-[rgba(217,217,217,0.4)] focus:bg-[rgba(217,217,217,0.2)] placeholder-white 
-              focus:placeholder-opacity-50 focus:border-[#F9EF19] focus:outline-none text-white"
+            bg-[rgba(217,217,217,0.4)] focus:bg-[rgba(217,217,217,0.2)] focus:placeholder-opacity-50 
+            focus:border-[#F9EF19] focus:outline-none text-white z-10"
             placeholder="Type your message..."
             rows={1}
             value={message}
@@ -81,7 +86,7 @@ const InputText = ({ onMessageSend }: { onMessageSend: () => void }) => {
           {/* Button Container */}
           <div
             className={`absolute right-3 ${isMultiLine ? "bottom-3" : "top-1/2 transform -translate-y-1/2"} 
-            flex items-center space-x-2 pr-3`}
+            flex items-center space-x-2 pr-3 z-10`}
           >
             <button className="p-2 rounded-full bg-white text-gray-700 hover:bg-yellow-400 transition">
               <Paperclip size={15} />

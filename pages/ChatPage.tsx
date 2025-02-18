@@ -25,16 +25,26 @@ function ChatPage() {
 
       {/* Welcome Text: Hide it after the user sends a message */}
       {!hasSentMessage && (
-        <div className={`flex flex-col items-center justify-center flex-1 ${isCollapsed ? "ml-30" : "ml-56"}`}>
-          <p className="text-3xl font-bold mb-4">Chat <span className="text-[#F9EF19]">BOT</span></p>
+        <div
+          className={`flex flex-col items-center justify-center flex-1 ${
+            isCollapsed ? "ml-30" : "ml-56"
+          }`}
+        >
+          <p className="text-3xl font-bold mb-4">
+            Chat <span className="text-[#F9EF19]">BOT</span>
+          </p>
           <p className="text-xl font-semibold">How can I help you today?</p>
         </div>
       )}
 
       {/* Chat Interface (No Scroll Here) */}
       <div className="flex-1 overflow-y-auto p-4 mb-5">
-        <div className={`w-[90%] max-w-[800px] mx-auto ${isCollapsed ? "mr-35" : "mr-56"}`}>
-          <InputText onMessageSend={handleMessageSend} />
+        <div
+          className={`w-[90%] max-w-[800px] mx-auto ${
+            isCollapsed ? "mr-35" : "mr-56"
+          }`}
+        >
+          <InputText onMessageSend={handleMessageSend} isCollapsed={isCollapsed} />
         </div>
       </div>
     </div>
