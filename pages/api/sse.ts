@@ -9,8 +9,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  const apiKey = "8ebe92d279f268436d5e06e7aa4371a7ee21e3251aa543377a5ec5d316e9247d"; // Your Together.ai API key
+  const apiKey = process.env.TOGETHER_API_KEY; // Retrieve the API key from environment variables
   const url = "https://api.together.ai/v1/chat"; // Replace with the actual endpoint for Together.ai's chat API
+
+  if (!apiKey) {
+    res.status(500).json({ error: "API key is missing" });
+    return;
+  }
 
   try {
     // Request to Together.ai API
