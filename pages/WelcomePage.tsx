@@ -23,7 +23,9 @@ const WelcomePage = () => {
 
       {/* Input field to type and send messages */}
       <div className="py-10 mx-96">
-        <InputText />
+        <InputText onMessageSend={function (): void {
+          throw new Error("Function not implemented.");
+        } } isCollapsed={false} />
       </div>
 
       {/* Info Feature */}
