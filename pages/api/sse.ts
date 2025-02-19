@@ -1,43 +1,46 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import OpenAI from "openai";
-
-// OpenAI API setup
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+import axios from "axios";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+  const { message } = req.query;
 
-  if (req.method !== "GET") {
-    res.status(405).end();
+  if (!message) {
+    res.status(400).json({ error: "Message query parameter is required" });
     return;
   }
 
-  const userMessage = req.query.message as string;
-  if (!userMessage) {
-    res.status(400).write("data: Error: Message is required\n\n");
-    res.end();
+  const apiKey = process.env.TOGETHER_API_KEY; // Retrieve the API key from environment variables
+  const url = "https://api.together.ai/v1/chat"; // Replace with the actual endpoint for Together.ai's chat API
+
+  if (!apiKey) {
+    res.status(500).json({ error: "API key is missing" });
     return;
   }
 
   try {
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: userMessage }],
-      stream: true, // Enable streaming
-    });
-
-    for await (const chunk of stream) {
-      if (chunk.choices[0]?.delta?.content) {
-        res.write(`data: ${chunk.choices[0].delta.content}\n\n`);
+    // Request to Together.ai API
+    const response = await axios.post(
+      url,
+      {
+        message: message,
+        api_key: apiKey, // Pass your API key as part of the body
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    }
-    res.write("data: __END__\n\n"); // Mark end of response
-    res.end();
+    );
+
+    // Get the response from Together.ai
+    const aiMessage = response.data.response; // Adjust based on the API response structure
+
+    // Simulate a delay (optional)
+    setTimeout(() => {
+      res.status(200).json({ data: aiMessage });
+    }, 1000);
   } catch (error) {
-    console.error("OpenAI API Error:", error);
-    res.write("data: Error: Unable to generate response\n\n");
-    res.end();
+    console.error("Error fetching AI response:", error);
+    res.status(500).json({ error: "Failed to fetch AI response" });
   }
 }

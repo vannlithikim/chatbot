@@ -1,5 +1,10 @@
-import Chat from "../components/Chat";
+import React from 'react'
+import ChatPage from './ChatPage'
 
-export default function Home() {
-  return <Chat />;
+function index() {
+  return (
+    <ChatPage />
+  )
 }
+
+export default index
