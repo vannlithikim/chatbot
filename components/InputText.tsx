@@ -1,10 +1,11 @@
-import { Send, Paperclip, Pencil, Copy } from "lucide-react";
+import { Send, Paperclip, Pencil } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import RegenerateButton from "./RegenerateButton"; // Import the new component
+import RegenerateButton from "./RegenerateButton"; 
+import CopyButton from "./CopyButton"; 
 
 const handleFullResponse = async (
   userMessage: string,
-  setMessages: React.Dispatch<React.SetStateAction<{ text: string; sender: "user" | "bot" }[]>>,
+  setMessages: React.Dispatch<React.SetStateAction<{ text: string; sender: "user" | "bot"; id: number }[]>>,
   setIsStreaming: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
@@ -12,10 +13,10 @@ const handleFullResponse = async (
     if (!response.ok) throw new Error("Server Error: Failed to fetch data");
 
     const data = await response.json();
-    setMessages((prev) => [...prev, { text: data.data, sender: "bot" }]);
+    setMessages((prev) => [...prev, { text: data.data, sender: "bot", id: Date.now() }]);
   } catch (error) {
     console.error(error);
-    setMessages((prev) => [...prev, { text: "Server Error: Please try again later.", sender: "bot" }]);
+    setMessages((prev) => [...prev, { text: "Server Error: Please try again later.", sender: "bot", id: Date.now() }]);
   } finally {
     setIsStreaming(false);
   }
@@ -23,7 +24,7 @@ const handleFullResponse = async (
 
 const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void; isCollapsed: boolean }) => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([]);
+  const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot"; id: number }[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [lastUserMessage, setLastUserMessage] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -43,7 +44,7 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void; 
 
   const handleSendMessage = async () => {
     if (message.trim() && !isStreaming) {
-      setMessages((prev) => [...prev, { text: message, sender: "user" }]);
+      setMessages((prev) => [...prev, { text: message, sender: "user", id: Date.now() }]);
       setLastUserMessage(message);
       setMessage("");
 
@@ -57,10 +58,14 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void; 
     <div className="flex flex-col w-full max-w-4xl mx-auto">
       {/* Chat messages */}
       <div className="flex-1 space-y-2 pb-20">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`p-3 rounded-lg ${msg.sender === "user" ? "bg-[#F9EF19]" : "bg-transparent"} max-w-xs relative`}>
-              <span className={`${msg.sender === "user" ? "text-black" : "text-white"}`}>{msg.text}</span>
+        {messages.map((msg) => (
+          <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"} relative`}>
+            <div
+              className={`p-3 rounded-lg ${msg.sender === "user" ? "bg-[#F9EF19]" : "bg-transparent"} max-w-xs`}
+            >
+              <span className={`${msg.sender === "user" ? "text-black" : "text-white"}`}>
+                {msg.text}
+              </span>
 
               {msg.sender === "bot" && (
                 <div className="absolute left-3 bottom-[-15px] flex justify-center gap-2">
@@ -70,7 +75,7 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void; 
                     setIsStreaming={setIsStreaming}
                   />
                   <Pencil size={18} className="text-white" />
-                  <Copy size={18} className="text-white" />
+                  <CopyButton text={msg.text} />
                 </div>
               )}
             </div>
@@ -85,9 +90,7 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void; 
 
           <textarea
             ref={textareaRef}
-            className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-400 
-            bg-[rgba(0,0,0,0.4)] focus:bg-[rgba(53,53,53,0.2)] focus:placeholder-opacity-50 
-            focus:border-[#F9EF19] focus:outline-none text-white z-10"
+            className="flex-1 resize-none text-base px-4 py-3 pr-28 rounded-[14px] border-2 border-gray-400 bg-[rgba(0,0,0,0.4)] focus:bg-[rgba(53,53,53,0.2)] focus:placeholder-opacity-50 focus:border-[#F9EF19] focus:outline-none text-white z-10"
             placeholder="Type your message..."
             rows={1}
             value={message}
@@ -95,8 +98,7 @@ const InputText = ({ onMessageSend, isCollapsed }: { onMessageSend: () => void; 
           />
 
           <div
-            className={`absolute right-3 ${isMultiLine ? "bottom-3" : "top-1/2 transform -translate-y-1/2"} 
-            flex items-center space-x-2 pr-3 z-10`}
+            className={`absolute right-3 ${isMultiLine ? "bottom-3" : "top-1/2 transform -translate-y-1/2"} flex items-center space-x-2 pr-3 z-10`}
           >
             <button className="p-2 rounded-full bg-white text-gray-700 hover:bg-yellow-400 transition">
               <Paperclip size={15} />
