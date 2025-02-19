@@ -10,7 +10,7 @@ const handleFullResponse = async (
     React.SetStateAction<{ text: string; sender: "user" | "bot"; id: number }[]>
   >,
   setIsStreaming: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsSending: React.Dispatch<React.SetStateAction<boolean>>
+  setIsSending: React.Dispatch<React.SetStateAction<boolean>> // Added setIsSending
 ) => {
   try {
     const response = await fetch(
@@ -35,7 +35,7 @@ const handleFullResponse = async (
     ]);
   } finally {
     setIsStreaming(false);
-    setIsSending(false); // Stop the Squircle animation once the response is received
+    setIsSending(false); // Immediately stop the Squircle animation
   }
 };
 
@@ -55,6 +55,7 @@ const InputText = ({
   const [isSending, setIsSending] = useState(false); // New state for showing the Squircle
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isMultiLine, setIsMultiLine] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null); // Ref to the last message container
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -69,6 +70,13 @@ const InputText = ({
     }
   }, [message]);
 
+  useEffect(() => {
+    // Scroll to the last message whenever messages change
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]); // Re-run whenever the messages array changes
+
   // Handle sending the message and show Squircle animation
   const handleSendMessage = async () => {
     if (message.trim() && !isStreaming) {
@@ -81,8 +89,17 @@ const InputText = ({
       setIsSending(true); // Show Squircle when sending
 
       setIsStreaming(true);
-      handleFullResponse(message, setMessages, setIsStreaming, setIsSending);
+      handleFullResponse(message, setMessages, setIsStreaming, setIsSending); // Pass setIsSending
+
       onMessageSend();
+    }
+  };
+
+  // Handle the Enter key to send message
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent a new line from being added
+      handleSendMessage();
     }
   };
 
@@ -98,9 +115,7 @@ const InputText = ({
             <div
               className={`p-3 rounded-lg ${msg.sender === "user" ? "bg-[#F9EF19]" : "bg-transparent"} max-w-xs`}
             >
-              <span
-                className={`${msg.sender === "user" ? "text-black" : "text-white"}`}
-              >
+              <span className={`${msg.sender === "user" ? "text-black" : "text-white"}`}>
                 {msg.text}
               </span>
 
@@ -118,6 +133,7 @@ const InputText = ({
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} /> {/* Empty div to scroll into view */}
       </div>
 
       {/* Input Area */}
@@ -134,6 +150,7 @@ const InputText = ({
             rows={1}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown} // Listen for Enter key press
           />
 
           <div
@@ -144,9 +161,7 @@ const InputText = ({
             </button>
             <button
               onClick={handleSendMessage}
-              className={`p-2 rounded-full ${
-                message ? "bg-[#F9E919] hover:bg-[#F9EF19]" : "bg-white"
-              } text-gray-700 transition`}
+              className={`p-2 rounded-full ${message ? "bg-[#F9E919]" : "bg-white"} text-gray-700 hover:bg-yellow-400 transition`}
             >
               {isSending ? (
                 <Squircle
