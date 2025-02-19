@@ -18,3 +18,13 @@ export const featureData: FeatureInfo[] = [
     icon: Shapes 
   }
 ];
+
+
+// Chat Messages
+export const chatMessages: string[] = [
+  "Let's build something!",
+  "Working on Project",
+  "Need help brainstorming new ideas?",
+  "AI can automate tasks and improve efficiency.",
+  "Have you considered AI for your workflow?",
+];
